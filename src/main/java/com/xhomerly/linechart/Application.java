@@ -68,14 +68,14 @@ public class Application extends javafx.application.Application implements Init 
             double x = from + i * (to - from)/n;
             series.getData().add(new XYChart.Data<>(x, Math.sin(x)));
         }
-        series.setName("x = sin(x)");
+        series.setName("y = sin(x)");
 
         XYChart.Series<Number, Number> series2 = new XYChart.Series<>();
         for (int i = 0; i <= n; i++) {
             double x = from + i * (to - from)/n;
             series2.getData().add(new XYChart.Data<>(x, Math.cos(x)));
         }
-        series2.setName("y = cos(y)");
+        series2.setName("y = cos(x)");
 
         lineChart.getData().add(series);
         lineChart.getData().add(series2);
