@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class Application extends javafx.application.Application implements Init 
         button2.setOnAction(e -> {
             Scene scene = new Scene(showCanvas());
             stage.setScene(scene);
-            stage.setMaximized(true);
+//            stage.setMaximized(true);
             stage.show();
         });
         root.getChildren().addAll(label, textField, label2, textField2, label3, textField3, button, button2);
@@ -86,10 +87,46 @@ public class Application extends javafx.application.Application implements Init 
     public Pane showCanvas() {
         Canvas canvas = new Canvas(1000, 800);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        // Nakreslení rámečku a osy
         gc.strokeRect(50, 50, 900, 700);
-        gc.strokeLine(100, 150, 300, 350); gc.strokeLine(300, 350, 500, 150);
-        gc.strokeLine(500, 150, 700, 700); gc.strokeLine(700, 700, 900, 250);
-        gc.strokeText("*** Canvas graf ***", 450, 700);
+
+        // Nakreslení osy X a Y
+        gc.setStroke(Color.BLACK);
+        gc.strokeLine(50, 400, 950, 400);  // osa X
+        gc.strokeLine(500, 50, 500, 750);  // osa Y
+
+        // Nastavení měřítka pro grafy
+        double scaleY = 100; // Jak daleko budou jednotlivé body na ose Y
+
+        // Vykreslení grafu funkce sínus
+        gc.setStroke(Color.RED); // Červená pro sínus
+        gc.beginPath();
+        for (int x = 0; x <= 900; x++) {
+            double angle = Math.toRadians(x - 450); // Převod na úhel (rohy do radiánů)
+            double y = Math.sin(angle) * scaleY;
+            if (x == 0) {
+                gc.moveTo(x + 50, 400 - y); // Nastavení počátečního bodu
+            } else {
+                gc.lineTo(x + 50, 400 - y); // Vykreslení čáry
+            }
+        }
+        gc.stroke();
+
+        // Vykreslení grafu funkce kosínus
+        gc.setStroke(Color.BLUE); // Modrá pro kosínus
+        gc.beginPath();
+        for (int x = 0; x <= 900; x++) {
+            double angle = Math.toRadians(x - 450); // Převod na úhel (rohy do radiánů)
+            double y = Math.cos(angle) * scaleY;
+            if (x == 0) {
+                gc.moveTo(x + 50, 400 - y); // Nastavení počátečního bodu
+            } else {
+                gc.lineTo(x + 50, 400 - y); // Vykreslení čáry
+            }
+        }
+        gc.stroke();
+
         Pane root = new Pane();
         root.getChildren().add(canvas);
 
