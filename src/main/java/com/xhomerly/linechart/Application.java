@@ -133,6 +133,28 @@ public class Application extends javafx.application.Application implements Init 
         return root;
     }
 
+    public Pane krciluvCanvas() {
+        Canvas canvas = new Canvas(1000, 800);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.strokeRect(50, 50, 900, 700);
+
+        int n = 100;
+
+        for (int i = 0; i < n; i++) {
+            double x = 6*(double)i/n;
+            double y = Math.sin(x);
+            double ix = 100 + 100 * x;
+            double iy = 400 + 300 * y;
+
+            gc.strokeLine(ix, iy, ix + 100, iy + 100);
+        }
+
+        Pane root = new Pane();
+        root.getChildren().add(canvas);
+
+        return root;
+    }
+
     public static void main(String[] args) {
         launch();
     }
