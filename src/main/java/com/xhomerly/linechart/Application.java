@@ -47,7 +47,7 @@ public class Application extends javafx.application.Application implements Init 
         });
         Button button2 = new Button("Vykreslit canvas");
         button2.setOnAction(e -> {
-            Scene scene = new Scene(showCanvas());
+            Scene scene = new Scene(krciluvCanvas()); //TODO: zde muzes menit funkce
             stage.setScene(scene);
 //            stage.setMaximized(true);
             stage.show();
@@ -141,18 +141,90 @@ public class Application extends javafx.application.Application implements Init 
         int n = 100;
 
         for (int i = 0; i < n; i++) {
-            double x = 6*(double)i/n;
+            double x = FROM + (TO - FROM)*(double)i/n;
             double y = Math.sin(x);
             double ix = 100 + 100 * x;
             double iy = 400 + 300 * y;
 
-            gc.strokeLine(ix, iy, ix + 100, iy + 100);
+            gc.strokeLine(ix, iy, ix + 10, iy + 10);
         }
 
         Pane root = new Pane();
         root.getChildren().add(canvas);
 
         return root;
+    }
+
+    //TODO: níže je Karlosovo AI kód
+
+    private void drawSinCos(GraphicsContext gc, double xStart, double xEnd, double yMin, double yMax) {
+        gc.beginPath();
+        double midY = (yMax + yMin) / 2;
+        double amplitude = (yMax - yMin) / 4;
+        double frequency = 0.02;
+
+        for (double x = xStart; x <= xEnd; x++) {
+            double ySin = midY - amplitude * Math.sin(frequency * (x - xStart) * 10);
+            double yCos = midY - amplitude * Math.cos(frequency * (x - xStart) * 10);
+
+            if (x == xStart) {
+                gc.moveTo(x, ySin);
+            } else {
+                gc.lineTo(x, ySin);
+            }
+        }
+        gc.stroke(); // Sinusoida
+
+        gc.beginPath();
+        for (double x = xStart; x <= xEnd; x++) {
+            double yCos = midY - amplitude * Math.cos(frequency * (x - xStart) * 10);
+
+            if (x == xStart) {
+                gc.moveTo(x, yCos);
+            } else {
+                gc.lineTo(x, yCos);
+            }
+        }
+        gc.stroke(); // Kosinusovka
+    }
+
+    private void drawCircularSpiral(GraphicsContext gc, double centerX, double centerY, int n) {
+        gc.beginPath();
+        double angleStep = Math.PI / 20;
+        double maxAngle = 2 * Math.PI * n;
+        double radiusStep = 10;
+
+        for (double angle = 0; angle <= maxAngle; angle += angleStep) {
+            double radius = (angle / maxAngle) * n * radiusStep;
+            double x = centerX + radius * Math.cos(angle);
+            double y = centerY + radius * Math.sin(angle);
+
+            if (angle == 0) {
+                gc.moveTo(x, y);
+            } else {
+                gc.lineTo(x, y);
+            }
+        }
+        gc.stroke();
+    }
+
+    private void drawSquareSpiral(GraphicsContext gc, double startX, double startY, int n) {
+        gc.beginPath();
+        double x = startX, y = startY;
+        double step = 20;
+        int direction = 0; // 0 - doprava, 1 - dolů, 2 - doleva, 3 - nahoru
+
+        for (int i = 1; i <= n * 2; i++) {
+            double length = i * step;
+            switch (direction) {
+                case 0 -> gc.lineTo(x += length, y); // doprava
+                case 1 -> gc.lineTo(x, y += length); // dolů
+                case 2 -> gc.lineTo(x -= length, y); // doleva
+                case 3 -> gc.lineTo(x, y -= length); // nahoru
+            }
+            direction = (direction + 1) % 4;
+        }
+        gc.stroke();
     }
 
     public static void main(String[] args) {
